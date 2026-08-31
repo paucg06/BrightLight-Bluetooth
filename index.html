@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BrightLight</title>
-  <link rel="icon" type="image/x-icon" href="icon.ico" />
-  <link rel="shortcut icon" href="icon.ico" type="image/x-icon" />
-  <link rel="icon" type="image/png" sizes="192x192" href="icon.png" />
-  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="icon" type="image/x-icon" href="icon.ico?v=2" />
+  <link rel="shortcut icon" href="icon.ico?v=2" type="image/x-icon" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon.png?v=2" />
+  <link rel="apple-touch-icon" href="icon.png?v=2" />
   <meta property="og:title" content="BrightLight" />
   <meta property="og:description" content="Control Bluetooth para bombillas Triones / HappyLighting" />
-  <meta property="og:image" content="icon.png" />
+  <meta property="og:image" content="icon.png?v=2" />
 
   <!-- Tipografía moderna y sólida -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -411,8 +411,8 @@
       border-color: #fff;
     }
 
-    /* Dynamic Modes */
-    .mode-select {
+    /* Form Elements & Selects */
+    .form-select {
       width: 100%;
       padding: 13px 15px;
       background: #1e293b;
@@ -425,8 +425,118 @@
       cursor: pointer;
     }
 
-    .mode-select:focus {
+    .form-select:focus {
       border-color: var(--border-focus);
+    }
+
+    /* Custom Effects Creator */
+    .custom-effects-box {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .custom-colors-track {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .custom-color-chip {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custom-color-chip:hover {
+      transform: scale(1.08);
+      border-color: #fff;
+    }
+
+    .custom-color-chip input[type="color"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .chip-delete-btn {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      background: #f43f5e;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 10px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .btn-add-color-chip {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      background: transparent;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.3rem;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .btn-add-color-chip:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: var(--accent);
+    }
+
+    .custom-loop-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .btn-custom-start {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-custom-stop {
+      background: #334155;
+      color: var(--text-muted);
+      box-shadow: none;
+    }
+
+    .btn-custom-stop.active {
+      background: #f43f5e;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3);
     }
 
     /* Collapsible BLE Details */
@@ -455,6 +565,20 @@
     details.card summary:hover {
       color: var(--text-main);
       background: rgba(255, 255, 255, 0.02);
+    }
+
+    .chevron-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      fill: none;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      color: var(--accent);
+    }
+
+    details[open] .chevron-icon {
+      transform: rotate(90deg);
     }
 
     .log-content-wrapper {
@@ -492,7 +616,7 @@
   <div class="container">
     <header>
       <div class="header-brand">
-        <img src="icon.png" alt="BrightLight Icon" class="app-icon" onerror="this.src='icon.ico'" />
+        <img src="icon.png?v=2" alt="BrightLight Icon" class="app-icon" onerror="this.src='icon.ico?v=2'" />
         <h1>BrightLight</h1>
       </div>
       <p>Control Bluetooth para bombillas Triones / HappyLighting (IP66)</p>
@@ -609,41 +733,78 @@
         </div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 14px;">
-        <select id="modeSelector" class="mode-select">
-          <option value="0x00">Seleccionar Efecto...</option>
-          <option value="0x25">Fundido 7 colores (Fade)</option>
-          <option value="0x26">Fundido Rojo gradual</option>
-          <option value="0x27">Fundido Verde gradual</option>
-          <option value="0x28">Fundido Azul gradual</option>
-          <option value="0x29">Fundido Amarillo gradual</option>
-          <option value="0x2a">Fundido Cian gradual</option>
-          <option value="0x2b">Fundido Púrpura gradual</option>
-          <option value="0x2c">Fundido Blanco gradual</option>
-          <option value="0x30">Estroboscópico 7 colores</option>
-          <option value="0x31">Estrobo Rojo</option>
-          <option value="0x32">Estrobo Verde</option>
-          <option value="0x33">Estrobo Azul</option>
-          <option value="0x38">Salto 7 colores (Jump)</option>
-        </select>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">Efectos Predefinidos:</label>
+          <select id="modeSelector" class="form-select">
+            <option value="0x00">Ninguno (Color estático)</option>
+            <option value="0x25">🌈 Fundido Arcoíris (Multicolor Fade)</option>
+            <option value="0x38">⚡ Salto de 7 Colores (Color Jump)</option>
+            <option value="0x37">✨ Estrobo Blanco (White Flash)</option>
+            <option value="0x2c">🌊 Pulso Suave (Color Pulse)</option>
+          </select>
+        </div>
 
-        <div class="control-row" style="margin-top: 4px;">
+        <div class="control-row" style="margin-top: 2px;">
           <div class="control-label">
             <span>Velocidad del Efecto</span>
             <span id="speedValue">Medio</span>
           </div>
           <input type="range" id="speedSlider" min="1" max="31" value="16" />
         </div>
+
+        <!-- CREADOR DE EFECTOS PERSONALIZADOS -->
+        <div class="custom-effects-box">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="font-size: 0.88rem; font-weight: 700; color: #fff;">Secuencia Personalizada de Colores:</label>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-dim);" id="customLoopStatus">Inactivo</span>
+          </div>
+          
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Toca un color para cambiarlo o pulsa '+' para añadir a la secuencia:</span>
+          
+          <div class="custom-colors-track" id="customColorsTrack"></div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Tipo de Transición:</label>
+              <select id="customTransitionType" class="form-select" style="padding: 9px 12px; font-size: 0.85rem;">
+                <option value="fade">Fundido Suave (Fade)</option>
+                <option value="jump">Salto Directo (Jump)</option>
+                <option value="strobe">Estroboscópico (Flash)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Tiempo por Color:</label>
+              <select id="customDuration" class="form-select" style="padding: 9px 12px; font-size: 0.85rem;">
+                <option value="600">Muy Rápido (0.6s)</option>
+                <option value="1200" selected>Normal (1.2s)</option>
+                <option value="2500">Lento (2.5s)</option>
+                <option value="4500">Muy Lento (4.5s)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="custom-loop-controls">
+            <button id="btnStartCustom" class="btn-custom-start">
+              <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Iniciar Secuencia
+            </button>
+            <button id="btnStopCustom" class="btn-custom-stop">
+              <svg class="icon-svg" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" rx="2"/></svg>
+              Detener
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Consola de Comunicación BLE (Plegable / Oculta por defecto) -->
+    <!-- Consola de Comunicación BLE (Plegable con flecha minimalista) -->
     <details class="card">
       <summary>
         <div style="display: flex; align-items: center; gap: 8px;">
           <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
           <span>Registro de Comunicación BLE</span>
         </div>
-        <span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Ver consola ▸</span>
+        <svg class="chevron-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </summary>
       <div class="log-content-wrapper">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
@@ -880,13 +1041,27 @@
       }
     }
 
+    // Configuración de Secuencia Personalizada
+    let customColors = ['#00ff00', '#ff0000', '#ffff00'];
+    let customLoopInterval = null;
+    let customIndex = 0;
+
+    const customColorsTrack = document.getElementById('customColorsTrack');
+    const btnStartCustom = document.getElementById('btnStartCustom');
+    const btnStopCustom = document.getElementById('btnStopCustom');
+    const customLoopStatus = document.getElementById('customLoopStatus');
+    const customTransitionType = document.getElementById('customTransitionType');
+    const customDuration = document.getElementById('customDuration');
+
     window.disconnectDevice = disconnectDevice;
 
     function powerOn() {
+      stopCustomSequence();
       sendCommand(new Uint8Array([0xCC, 0x23, 0x33]), "Encender");
     }
 
     function powerOff() {
+      stopCustomSequence();
       sendCommand(new Uint8Array([0xCC, 0x24, 0x33]), "Apagar");
     }
 
@@ -899,6 +1074,7 @@
     }
 
     function sendMode(modeHex, speedVal) {
+      stopCustomSequence();
       const mode = parseInt(modeHex, 16);
       if (mode === 0) return;
       const speed = 32 - speedVal;
@@ -923,12 +1099,137 @@
       }
     }
 
+    // GESTIÓN DE SECUENCIA PERSONALIZADA
+    function renderCustomColors() {
+      customColorsTrack.innerHTML = '';
+      customColors.forEach((color, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'custom-color-chip';
+        chip.style.backgroundColor = color;
+
+        const input = document.createElement('input');
+        input.type = 'color';
+        input.value = color;
+        input.addEventListener('input', (e) => {
+          customColors[idx] = e.target.value;
+          chip.style.backgroundColor = e.target.value;
+        });
+
+        chip.appendChild(input);
+
+        if (customColors.length > 2) {
+          const delBtn = document.createElement('div');
+          delBtn.className = 'chip-delete-btn';
+          delBtn.textContent = '×';
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customColors.splice(idx, 1);
+            renderCustomColors();
+          });
+          chip.appendChild(delBtn);
+        }
+
+        customColorsTrack.appendChild(chip);
+      });
+
+      if (customColors.length < 6) {
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn-add-color-chip';
+        addBtn.textContent = '+';
+        addBtn.title = 'Añadir color a la secuencia';
+        addBtn.addEventListener('click', () => {
+          const palette = ['#00ffff', '#ff6600', '#ff00ff', '#ffffff', '#8b5cf6'];
+          const next = palette[customColors.length % palette.length];
+          customColors.push(next);
+          renderCustomColors();
+        });
+        customColorsTrack.appendChild(addBtn);
+      }
+    }
+
+    function stopCustomSequence() {
+      if (customLoopInterval) {
+        clearInterval(customLoopInterval);
+        customLoopInterval = null;
+      }
+      customLoopStatus.textContent = 'Inactivo';
+      customLoopStatus.style.color = 'var(--text-dim)';
+      btnStopCustom.classList.remove('active');
+    }
+
+    function startCustomSequence() {
+      stopCustomSequence();
+      if (customColors.length === 0) return;
+
+      modeSelector.value = "0x00";
+      customLoopStatus.textContent = 'Ejecutando';
+      customLoopStatus.style.color = 'var(--success)';
+      btnStopCustom.classList.add('active');
+
+      const transition = customTransitionType.value;
+      const durationMs = parseInt(customDuration.value, 10);
+      customIndex = 0;
+
+      function step() {
+        const fromHex = customColors[customIndex];
+        customIndex = (customIndex + 1) % customColors.length;
+        const toHex = customColors[customIndex];
+
+        const fromRgb = hexToRgb(fromHex);
+        const toRgb = hexToRgb(toHex);
+
+        if (transition === 'jump') {
+          currentColor = toRgb;
+          updateGlow(toRgb.r, toRgb.g, toRgb.b, currentBrightness);
+          sendRGB(toRgb.r, toRgb.g, toRgb.b, currentBrightness);
+        } else if (transition === 'strobe') {
+          currentColor = toRgb;
+          updateGlow(toRgb.r, toRgb.g, toRgb.b, currentBrightness);
+          sendRGB(toRgb.r, toRgb.g, toRgb.b, currentBrightness);
+          setTimeout(() => {
+            if (customLoopStatus.textContent === 'Ejecutando') {
+              sendRGB(0, 0, 0, 0);
+            }
+          }, Math.min(150, durationMs / 4));
+        } else {
+          // Fade suave interpolando
+          const steps = 14;
+          const stepTime = durationMs / steps;
+          let currentStep = 0;
+
+          const fadeInterval = setInterval(() => {
+            currentStep++;
+            const factor = currentStep / steps;
+            const r = Math.round(fromRgb.r + (toRgb.r - fromRgb.r) * factor);
+            const g = Math.round(fromRgb.g + (toRgb.g - fromRgb.g) * factor);
+            const b = Math.round(fromRgb.b + (toRgb.b - fromRgb.b) * factor);
+
+            currentColor = { r, g, b };
+            updateGlow(r, g, b, currentBrightness);
+
+            if (currentStep % 2 === 0 || currentStep === steps) {
+              sendRGB(r, g, b, currentBrightness);
+            }
+
+            if (currentStep >= steps) {
+              clearInterval(fadeInterval);
+            }
+          }, stepTime);
+        }
+      }
+
+      step();
+      customLoopInterval = setInterval(step, durationMs);
+      log(`Secuencia personalizada iniciada (${transition}, ${durationMs}ms)`, 'info');
+    }
+
     btnConnect.addEventListener('click', connectBluetooth);
     btnAddAnother.addEventListener('click', connectBluetooth);
     btnPowerOn.addEventListener('click', powerOn);
     btnPowerOff.addEventListener('click', powerOff);
 
     colorPicker.addEventListener('input', (e) => {
+      stopCustomSequence();
       currentColor = hexToRgb(e.target.value);
       updateGlow(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
       throttledSendColor();
@@ -943,6 +1244,7 @@
 
     document.querySelectorAll('.color-dot').forEach(dot => {
       dot.addEventListener('click', () => {
+        stopCustomSequence();
         const hex = dot.getAttribute('data-color');
         currentColor = hexToRgb(hex);
         colorPicker.value = hex;
@@ -963,7 +1265,11 @@
       }
     });
 
-    // Inicialización precisa al cargar
+    btnStartCustom.addEventListener('click', startCustomSequence);
+    btnStopCustom.addEventListener('click', stopCustomSequence);
+
+    // Inicializaciones
+    renderCustomColors();
     updateSpeedLabel(parseInt(speedSlider.value, 10));
     updateGlow(255, 255, 255, 100);
     log("BrightLight listo. Haz clic en 'Conectar Luz' para emparejar.", "info");
