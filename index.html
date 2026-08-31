@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -11,49 +11,60 @@
   <meta property="og:title" content="SmartLight" />
   <meta property="og:description" content="Control Bluetooth para bombillas Triones / HappyLighting" />
   <meta property="og:image" content="icon.png" />
+
+  <!-- Tipografía moderna y sólida -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg-primary: #0f172a;
-      --bg-card: #1e293b;
-      --bg-card-hover: #334155;
+      --bg-base: #0b0f19;
+      --bg-card: #151d2e;
+      --bg-card-hover: #1e293b;
+      --bg-input: #0f172a;
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.35);
-      --text-main: #f8fafc;
+      --accent-hover: #0ea5e9;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --text-main: #f1f5f9;
       --text-muted: #94a3b8;
-      --success: #22c55e;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --text-dim: #64748b;
+      --success: #10b981;
+      --danger: #f43f5e;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(56, 189, 248, 0.4);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg-primary) 100%);
+      background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-base) 100%);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px 48px;
+      padding: 32px 16px 56px;
     }
 
     .container {
       width: 100%;
-      max-width: 680px;
+      max-width: 620px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
+    /* Header */
     header {
       text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -63,98 +74,111 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 6px;
+      gap: 14px;
+      margin-bottom: 8px;
     }
 
     .app-icon {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       object-fit: cover;
-      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     header h1 {
-      font-size: 2rem;
+      font-size: 2.1rem;
       font-weight: 800;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #38bdf8, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.8px;
+      color: #ffffff;
     }
 
     header p {
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.92rem;
+      font-weight: 500;
     }
 
+    /* Cards */
     .card {
       background: var(--bg-card);
-      border-radius: 16px;
-      padding: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
-      transition: border-color 0.2s;
+      border-radius: 18px;
+      padding: 22px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.45);
     }
 
     .card-title {
       font-size: 1.05rem;
-      font-weight: 600;
-      margin-bottom: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      color: #ffffff;
     }
 
-    /* Connection Card */
+    .card-title-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .icon-svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.2;
+      stroke: currentColor;
+      fill: none;
+      vertical-align: middle;
+    }
+
+    /* Status Badge */
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
+      gap: 7px;
+      padding: 5px 12px;
       border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: rgba(239, 68, 68, 0.15);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      background: rgba(244, 63, 94, 0.14);
       color: var(--danger);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      border: 1px solid rgba(244, 63, 94, 0.28);
     }
 
     .status-badge.connected {
-      background: rgba(34, 197, 94, 0.15);
+      background: rgba(16, 185, 129, 0.14);
       color: var(--success);
-      border-color: rgba(34, 197, 94, 0.3);
+      border-color: rgba(16, 185, 129, 0.28);
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: currentColor;
     }
 
-    .btn-group {
-      display: flex;
-      gap: 12px;
-    }
-
+    /* Buttons */
     button {
-      background: #3b82f6;
+      background: #2563eb;
       color: white;
       border: none;
-      padding: 12px 18px;
-      border-radius: 10px;
+      padding: 13px 20px;
+      border-radius: 12px;
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+      gap: 10px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
     }
 
     button:hover:not(:disabled) {
@@ -167,58 +191,48 @@
     }
 
     button:disabled {
-      opacity: 0.5;
+      opacity: 0.45;
       cursor: not-allowed;
       box-shadow: none;
     }
 
-    button.btn-disconnect {
-      background: #475569;
-      box-shadow: none;
-    }
-
-    button.btn-disconnect:hover:not(:disabled) {
-      background: #ef4444;
-    }
-
-    button.btn-on {
-      background: #10b981;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    button.btn-off {
-      background: #dc2626;
-      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    .btn-connect-primary {
+      background: #3b82f6;
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
     }
 
     .btn-add-light {
-      background: #334155;
-      border: 1px dashed rgba(255, 255, 255, 0.25);
+      background: #1e293b;
+      border: 1px dashed rgba(255, 255, 255, 0.22);
       color: var(--accent);
-      padding: 10px 16px;
+      padding: 11px 16px;
       font-size: 0.88rem;
+      font-weight: 600;
       box-shadow: none;
       width: 100%;
-      margin-top: 10px;
+      margin-top: 12px;
+      border-radius: 10px;
     }
 
     .btn-add-light:hover:not(:disabled) {
-      background: #1e293b;
+      background: #273549;
       border-color: var(--accent);
     }
 
+    /* Devices List */
     .devices-box {
-      margin-top: 14px;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
 
     .device-chip {
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 10px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 11px 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -227,31 +241,26 @@
     .device-chip-info {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .device-chip-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      gap: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
     }
 
     .btn-chip-disconnect {
       background: transparent;
       color: var(--text-muted);
-      padding: 4px 8px;
+      padding: 5px 10px;
       font-size: 0.78rem;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 6px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
       box-shadow: none;
     }
 
     .btn-chip-disconnect:hover {
-      background: #ef4444;
+      background: var(--danger);
       color: #fff;
-      border-color: #ef4444;
+      border-color: var(--danger);
     }
 
     .target-mode-bar {
@@ -259,24 +268,27 @@
       align-items: center;
       justify-content: space-between;
       margin-top: 12px;
-      padding: 8px 12px;
-      background: #0f172a;
-      border-radius: 8px;
-      font-size: 0.85rem;
+      padding: 10px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
     }
 
     .target-mode-select {
       background: #1e293b;
       color: var(--accent);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 700;
       outline: none;
       cursor: pointer;
     }
 
-    /* Power Card */
+    /* Power Buttons */
     .power-controls {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -284,9 +296,19 @@
     }
 
     .power-btn {
-      padding: 18px;
-      font-size: 1.1rem;
-      border-radius: 12px;
+      padding: 16px;
+      font-size: 1.05rem;
+      border-radius: 14px;
+    }
+
+    .btn-on {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-off {
+      background: linear-gradient(135deg, #f43f5e, #e11d48);
+      box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35);
     }
 
     /* Color Preview */
@@ -294,63 +316,34 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
+      gap: 22px;
+      margin: 4px 0 22px;
     }
 
     .bulb-glow-circle {
-      width: 90px;
-      height: 90px;
+      width: 92px;
+      height: 92px;
       border-radius: 50%;
       background: #ffffff;
       box-shadow: 0 0 35px #ffffff;
-      border: 3px solid rgba(255, 255, 255, 0.4);
+      border: 3px solid rgba(255, 255, 255, 0.5);
       transition: background 0.15s ease, box-shadow 0.15s ease;
-    }
-
-    .color-input-wrapper {
-      position: relative;
     }
 
     input[type="color"] {
       -webkit-appearance: none;
       border: none;
-      width: 56px;
-      height: 56px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       cursor: pointer;
       background: transparent;
     }
 
-    input[type="color"]::-webkit-color-swatch-wrapper {
-      padding: 0;
-    }
-
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
     input[type="color"]::-webkit-color-swatch {
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.35);
       border-radius: 50%;
-    }
-
-    /* Color Grid */
-    .preset-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .color-dot {
-      width: 100%;
-      aspect-ratio: 1/1;
-      border-radius: 10px;
-      border: 2px solid rgba(255, 255, 255, 0.15);
-      cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
-    }
-
-    .color-dot:hover {
-      transform: scale(1.1);
-      border-color: #fff;
     }
 
     /* Sliders */
@@ -361,21 +354,22 @@
     .control-label {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 9px;
       font-size: 0.9rem;
+      font-weight: 600;
       color: var(--text-muted);
     }
 
     .control-label span:last-child {
-      font-weight: 600;
+      font-weight: 800;
       color: var(--text-main);
     }
 
     input[type="range"] {
       width: 100%;
       height: 8px;
-      border-radius: 4px;
-      background: #334155;
+      border-radius: 6px;
+      background: #1e293b;
       outline: none;
       -webkit-appearance: none;
     }
@@ -387,25 +381,52 @@
       border-radius: 50%;
       background: #38bdf8;
       cursor: pointer;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
       transition: transform 0.1s;
     }
 
     input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.15);
+      transform: scale(1.18);
+    }
+
+    /* Preset Colors */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .color-dot {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.12);
+      border-color: #fff;
     }
 
     /* Dynamic Modes */
     .mode-select {
       width: 100%;
-      padding: 12px;
-      background: #334155;
+      padding: 13px 15px;
+      background: #1e293b;
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
       font-size: 0.95rem;
+      font-weight: 600;
       outline: none;
       cursor: pointer;
+    }
+
+    .mode-select:focus {
+      border-color: var(--border-focus);
     }
 
     /* Collapsible BLE Details */
@@ -415,9 +436,9 @@
     }
 
     details.card summary {
-      padding: 16px 20px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      padding: 16px 22px;
+      font-size: 0.92rem;
+      font-weight: 700;
       cursor: pointer;
       list-style: none;
       display: flex;
@@ -437,15 +458,15 @@
     }
 
     .log-content-wrapper {
-      padding: 0 20px 20px;
+      padding: 0 22px 22px;
     }
 
     .log-box {
       background: #090d16;
-      border: 1px solid #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 10px;
       padding: 12px;
-      font-family: "Courier New", Courier, monospace;
+      font-family: "Cascadia Code", "Courier New", Courier, monospace;
       font-size: 0.78rem;
       color: #94a3b8;
       height: 140px;
@@ -455,22 +476,15 @@
       gap: 4px;
     }
 
-    .log-entry {
-      line-height: 1.3;
-    }
-
-    .log-entry.success { color: #4ade80; }
-    .log-entry.error { color: #f87171; }
+    .log-entry { line-height: 1.3; }
+    .log-entry.success { color: #34d399; }
+    .log-entry.error { color: #fb7185; }
     .log-entry.info { color: #38bdf8; }
-    .log-entry.tx { color: #fbbf24; }
+    .log-entry.tx { color: #facc15; }
 
     @media (max-width: 480px) {
-      .preset-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-      .power-controls {
-        grid-template-columns: 1fr;
-      }
+      .preset-grid { grid-template-columns: repeat(4, 1fr); }
+      .power-controls { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -478,7 +492,7 @@
   <div class="container">
     <header>
       <div class="header-brand">
-        <img src="icon.ico" alt="SmartLight Icon" class="app-icon" onerror="this.style.display='none'" />
+        <img src="icon.png" alt="SmartLight Icon" class="app-icon" onerror="this.src='icon.ico'" />
         <h1>SmartLight</h1>
       </div>
       <p>Control Bluetooth para bombillas Triones / HappyLighting (IP66)</p>
@@ -487,7 +501,10 @@
     <!-- Estado y Conexión Multi-Luz -->
     <div class="card">
       <div class="card-title">
-        <span>Conexión Bluetooth</span>
+        <div class="card-title-left">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
+          <span>Conexión Bluetooth</span>
+        </div>
         <div id="statusBadge" class="status-badge">
           <div class="status-dot"></div>
           <span id="statusText">Desconectado</span>
@@ -496,8 +513,8 @@
 
       <!-- Botón inicial de conectar -->
       <div id="initialConnectBox">
-        <button id="btnConnect" style="width: 100%;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
+        <button id="btnConnect" class="btn-connect-primary">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
           Conectar Luz
         </button>
       </div>
@@ -507,13 +524,14 @@
         <div class="devices-box" id="devicesList"></div>
         
         <button id="btnAddAnother" class="btn-add-light">
-          + Conectar otra luz Bluetooth
+          <svg class="icon-svg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Conectar otra luz Bluetooth
         </button>
 
         <div class="target-mode-bar" id="targetModeBar" style="display: none;">
-          <span style="color: var(--text-muted);">Aplicar cambios a:</span>
+          <span style="color: var(--text-muted);">Aplicar a:</span>
           <select id="targetSelect" class="target-mode-select">
-            <option value="ALL">✨ Todas las luces (Sincronizadas)</option>
+            <option value="ALL">Todas las luces (Sincronizadas)</option>
           </select>
         </div>
       </div>
@@ -522,14 +540,19 @@
     <!-- Controles de Encendido / Apagado -->
     <div class="card">
       <div class="card-title">
-        <span>Alimentación</span>
+        <div class="card-title-left">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+          <span>Alimentación</span>
+        </div>
       </div>
       <div class="power-controls">
         <button id="btnPowerOn" class="power-btn btn-on">
-          ☀️ Encender
+          <svg class="icon-svg" viewBox="0 0 24 24" style="width:20px;height:20px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          Encender
         </button>
         <button id="btnPowerOff" class="power-btn btn-off">
-          🌙 Apagar
+          <svg class="icon-svg" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          Apagar
         </button>
       </div>
     </div>
@@ -537,7 +560,10 @@
     <!-- Selector de Color y Brillo -->
     <div class="card">
       <div class="card-title">
-        <span>Color y Brillo</span>
+        <div class="card-title-left">
+          <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+          <span>Color y Brillo</span>
+        </div>
       </div>
 
       <div class="color-preview-container">
@@ -556,7 +582,7 @@
       </div>
 
       <div style="margin-top: 18px;">
-        <span style="font-size: 0.85rem; color: var(--text-muted);">Colores rápidos:</span>
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);">Colores rápidos:</span>
         <div class="preset-grid">
           <div class="color-dot" style="background: #ffffff;" data-color="#ffffff" title="Blanco Frío"></div>
           <div class="color-dot" style="background: #ffaa44;" data-color="#ffaa44" title="Blanco Cálido"></div>
@@ -577,30 +603,33 @@
     <!-- Modos Dinámicos y Efectos -->
     <div class="card">
       <div class="card-title">
-        <span>Efectos Dinámicos</span>
+        <div class="card-title-left">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          <span>Efectos Dinámicos</span>
+        </div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 14px;">
         <select id="modeSelector" class="mode-select">
           <option value="0x00">Seleccionar Efecto...</option>
-          <option value="0x25">🌈 Fundido 7 colores (Fade)</option>
-          <option value="0x26">🔴 Fundido Rojo gradual</option>
-          <option value="0x27">🟢 Fundido Verde gradual</option>
-          <option value="0x28">🔵 Fundido Azul gradual</option>
-          <option value="0x29">🟡 Fundido Amarillo gradual</option>
-          <option value="0x2a">🔷 Fundido Cian gradual</option>
-          <option value="0x2b">🟣 Fundido Púrpura gradual</option>
-          <option value="0x2c">⚪ Fundido Blanco gradual</option>
-          <option value="0x30">⚡ Estroboscópico 7 colores</option>
-          <option value="0x31">🔴 Estrobo Rojo</option>
-          <option value="0x32">🟢 Estrobo Verde</option>
-          <option value="0x33">🔵 Estrobo Azul</option>
-          <option value="0x38">🔀 Salto 7 colores (Jump)</option>
+          <option value="0x25">Fundido 7 colores (Fade)</option>
+          <option value="0x26">Fundido Rojo gradual</option>
+          <option value="0x27">Fundido Verde gradual</option>
+          <option value="0x28">Fundido Azul gradual</option>
+          <option value="0x29">Fundido Amarillo gradual</option>
+          <option value="0x2a">Fundido Cian gradual</option>
+          <option value="0x2b">Fundido Púrpura gradual</option>
+          <option value="0x2c">Fundido Blanco gradual</option>
+          <option value="0x30">Estroboscópico 7 colores</option>
+          <option value="0x31">Estrobo Rojo</option>
+          <option value="0x32">Estrobo Verde</option>
+          <option value="0x33">Estrobo Azul</option>
+          <option value="0x38">Salto 7 colores (Jump)</option>
         </select>
 
         <div class="control-row" style="margin-top: 4px;">
           <div class="control-label">
             <span>Velocidad del Efecto</span>
-            <span id="speedValue">Rápido</span>
+            <span id="speedValue">Medio</span>
           </div>
           <input type="range" id="speedSlider" min="1" max="31" value="16" />
         </div>
@@ -610,12 +639,15 @@
     <!-- Consola de Comunicación BLE (Plegable / Oculta por defecto) -->
     <details class="card">
       <summary>
-        <span>📡 Registro de Comunicación BLE</span>
-        <span style="font-size: 0.75rem; color: var(--accent);">Ver registro ▸</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+          <span>Registro de Comunicación BLE</span>
+        </div>
+        <span style="font-size: 0.75rem; color: var(--accent); font-weight: 600;">Ver consola ▸</span>
       </summary>
       <div class="log-content-wrapper">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
-          <button id="btnClearLog" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Limpiar</button>
+          <button id="btnClearLog" style="padding: 4px 10px; font-size: 0.75rem; background: #1e293b; box-shadow:none;">Limpiar</button>
         </div>
         <div id="logBox" class="log-box"></div>
       </div>
@@ -822,7 +854,7 @@
           chip.className = 'device-chip';
           chip.innerHTML = `
             <div class="device-chip-info">
-              <span style="color: var(--accent);">💡</span>
+              <svg class="icon-svg" style="color:var(--accent);" viewBox="0 0 24 24"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
               <span>${item.name}</span>
             </div>
             <div class="device-chip-actions">
@@ -834,16 +866,16 @@
 
         if (count > 1) {
           targetModeBar.style.display = 'flex';
-          targetSelect.innerHTML = `<option value="ALL">✨ Todas las luces (${count}) Sincronizadas</option>`;
+          targetSelect.innerHTML = `<option value="ALL">Todas las luces (${count})</option>`;
           connectedDevices.forEach((item, id) => {
             const opt = document.createElement('option');
             opt.value = id;
-            opt.textContent = `💡 Solo ${item.name}`;
+            opt.textContent = `Solo ${item.name}`;
             targetSelect.appendChild(opt);
           });
         } else {
           targetModeBar.style.display = 'none';
-          targetSelect.innerHTML = '<option value="ALL">✨ Todas las luces</option>';
+          targetSelect.innerHTML = '<option value="ALL">Todas las luces</option>';
         }
       }
     }
@@ -881,6 +913,16 @@
       }, 50);
     }
 
+    function updateSpeedLabel(val) {
+      if (val <= 10) {
+        speedValue.textContent = 'Lento';
+      } else if (val <= 21) {
+        speedValue.textContent = 'Medio';
+      } else {
+        speedValue.textContent = 'Rápido';
+      }
+    }
+
     btnConnect.addEventListener('click', connectBluetooth);
     btnAddAnother.addEventListener('click', connectBluetooth);
     btnPowerOn.addEventListener('click', powerOn);
@@ -915,12 +957,14 @@
 
     speedSlider.addEventListener('input', (e) => {
       const val = parseInt(e.target.value, 10);
-      speedValue.textContent = val > 20 ? 'Rápido' : (val > 10 ? 'Medio' : 'Lento');
+      updateSpeedLabel(val);
       if (modeSelector.value !== "0x00") {
         sendMode(modeSelector.value, val);
       }
     });
 
+    // Inicialización precisa al cargar
+    updateSpeedLabel(parseInt(speedSlider.value, 10));
     updateGlow(255, 255, 255, 100);
     log("SmartLight listo. Haz clic en 'Conectar Luz' para emparejar.", "info");
   </script>
