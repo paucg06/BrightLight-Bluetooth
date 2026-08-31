@@ -1,17 +1,17 @@
-﻿# 💡 SmartLight - Bluetooth Web Controller
+﻿# 💡 BrightLight - Bluetooth Web Controller
 
-Controlador web mediante **Web Bluetooth API** para bombillas y tiras LED compatibles con **Triones**, **HappyLighting**, **QHM** y dispositivos BLE (IP66).
+Controlador web moderno desarrollado con la **Web Bluetooth API** para gestionar bombillas y tiras LED compatibles con los protocolos **Triones**, **HappyLighting**, **QHM** y dispositivos BLE genéricos (IP66).
 
 ## 🚀 Características
-- ⚡ **Sin instalación**: Funciona directamente desde el navegador (Google Chrome, Microsoft Edge, Opera).
-- 💡 **Multi-Luz**: Conecta y controla múltiples luces simultáneamente o de forma individual.
-- 🎨 **Selector de color y brillo**: Rueda cromática, paleta rápida de 12 colores y ajuste de potencia de 1% a 100%.
-- 🌈 **Efectos dinámicos**: Modos de desvanecimiento (Fade), estroboscópico, saltos y regulación de velocidad precisa.
-- 📡 **Consola BLE integrada**: Diagnóstico en tiempo real de los paquetes transmitidos.
+- ⚡ **Sin instalación**: Se ejecuta directamente desde cualquier navegador compatible (Google Chrome, Microsoft Edge, Opera).
+- 💡 **Multi-Luz**: Empareja y controla varias bombillas a la vez (modo sincronizado) o de manera individual.
+- 🎨 **Selector de color y brillo**: Rueda de color completa, paleta de colores rápidos y ajuste de potencia del 1% al 100%.
+- 🌈 **Efectos dinámicos**: Selección de efectos de cambio gradual (Fade), estroboscópicos y saltos de color con ajuste de velocidad.
+- 📡 **Consola BLE integrada**: Diagnóstico en tiempo real para visualizar los bytes transmitidos a las luces.
 
-## 🌐 Cómo usarlo con GitHub Pages
-1. Ve a **Settings -> Pages** en tu repositorio de GitHub: `https://github.com/paucg06/SmartLight/settings/pages`
+## 🌐 Cómo activar GitHub Pages
+1. Ve a **Settings -> Pages** en tu repositorio: `https://github.com/paucg06/BrightLight-Bluetooth/settings/pages`
 2. En **Build and deployment > Source**, selecciona **Deploy from a branch**.
-3. Selecciona la rama `main` y la carpeta `/ (root)`.
-4. Guarda y accede a la URL generada:
-   👉 **`https://paucg06.github.io/SmartLight/`**
+3. Elige la rama **`main`** y la carpeta **`/ (root)`**.
+4. Guarda los cambios. Tu web estará disponible en:
+   👉 **`https://paucg06.github.io/BrightLight-Bluetooth/`**
