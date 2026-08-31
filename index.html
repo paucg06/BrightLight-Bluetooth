@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLight</title>
+  <link rel="icon" type="image/x-icon" href="icon.ico" />
+  <link rel="shortcut icon" href="icon.ico" type="image/x-icon" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <meta property="og:title" content="SmartLight" />
+  <meta property="og:description" content="Control Bluetooth para bombillas Triones / HappyLighting" />
+  <meta property="og:image" content="icon.png" />
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #334155;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg-primary) 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .app-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      transition: border-color 0.2s;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Connection Card */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-badge.connected {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    button.btn-disconnect {
+      background: #475569;
+      box-shadow: none;
+    }
+
+    button.btn-disconnect:hover:not(:disabled) {
+      background: #ef4444;
+    }
+
+    button.btn-on {
+      background: #10b981;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    button.btn-off {
+      background: #dc2626;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-add-light {
+      background: #334155;
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      color: var(--accent);
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      box-shadow: none;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .btn-add-light:hover:not(:disabled) {
+      background: #1e293b;
+      border-color: var(--accent);
+    }
+
+    .devices-box {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .device-chip {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .device-chip-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .device-chip-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-chip-disconnect {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 4px 8px;
+      font-size: 0.78rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      box-shadow: none;
+    }
+
+    .btn-chip-disconnect:hover {
+      background: #ef4444;
+      color: #fff;
+      border-color: #ef4444;
+    }
+
+    .target-mode-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: #0f172a;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+
+    .target-mode-select {
+      background: #1e293b;
+      color: var(--accent);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Power Card */
+    .power-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .power-btn {
+      padding: 18px;
+      font-size: 1.1rem;
+      border-radius: 12px;
+    }
+
+    /* Color Preview */
+    .color-preview-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .bulb-glow-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 35px #ffffff;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .color-input-wrapper {
+      position: relative;
+    }
+
+    input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+    }
+
+    /* Color Grid */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .color-dot {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.1);
+      border-color: #fff;
+    }
+
+    /* Sliders */
+    .control-row {
+      margin-top: 18px;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .control-label span:last-child {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #334155;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Dynamic Modes */
+    .mode-select {
+      width: 100%;
+      padding: 12px;
+      background: #334155;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Collapsible BLE Details */
+    details.card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    details.card summary {
+      padding: 16px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      color: var(--text-muted);
+    }
+
+    details.card summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.card summary:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .log-content-wrapper {
+      padding: 0 20px 20px;
+    }
+
+    .log-box {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      height: 140px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .log-entry {
+      line-height: 1.3;
+    }
+
+    .log-entry.success { color: #4ade80; }
+    .log-entry.error { color: #f87171; }
+    .log-entry.info { color: #38bdf8; }
+    .log-entry.tx { color: #fbbf24; }
+
+    @media (max-width: 480px) {
+      .preset-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .power-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-brand">
+        <img src="icon.ico" alt="SmartLight Icon" class="app-icon" onerror="this.style.display='none'" />
+        <h1>SmartLight</h1>
+      </div>
+      <p>Control Bluetooth para bombillas Triones / HappyLighting (IP66)</p>
+    </header>
+
+    <!-- Estado y Conexión Multi-Luz -->
+    <div class="card">
+      <div class="card-title">
+        <span>Conexión Bluetooth</span>
+        <div id="statusBadge" class="status-badge">
+          <div class="status-dot"></div>
+          <span id="statusText">Desconectado</span>
+        </div>
+      </div>
+
+      <!-- Botón inicial de conectar -->
+      <div id="initialConnectBox">
+        <button id="btnConnect" style="width: 100%;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
+          Conectar Luz
+        </button>
+      </div>
+
+      <!-- Lista de dispositivos conectados -->
+      <div id="devicesContainer" style="display: none;">
+        <div class="devices-box" id="devicesList"></div>
+        
+        <button id="btnAddAnother" class="btn-add-light">
+          + Conectar otra luz Bluetooth
+        </button>
+
+        <div class="target-mode-bar" id="targetModeBar" style="display: none;">
+          <span style="color: var(--text-muted);">Aplicar cambios a:</span>
+          <select id="targetSelect" class="target-mode-select">
+            <option value="ALL">✨ Todas las luces (Sincronizadas)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles de Encendido / Apagado -->
+    <div class="card">
+      <div class="card-title">
+        <span>Alimentación</span>
+      </div>
+      <div class="power-controls">
+        <button id="btnPowerOn" class="power-btn btn-on">
+          ☀️ Encender
+        </button>
+        <button id="btnPowerOff" class="power-btn btn-off">
+          🌙 Apagar
+        </button>
+      </div>
+    </div>
+
+    <!-- Selector de Color y Brillo -->
+    <div class="card">
+      <div class="card-title">
+        <span>Color y Brillo</span>
+      </div>
+
+      <div class="color-preview-container">
+        <div id="bulbPreview" class="bulb-glow-circle"></div>
+        <div class="color-input-wrapper">
+          <input type="color" id="colorPicker" value="#ffffff" />
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">
+          <span>Potencia / Brillo</span>
+          <span id="brightnessValue">100%</span>
+        </div>
+        <input type="range" id="brightnessSlider" min="1" max="100" value="100" />
+      </div>
+
+      <div style="margin-top: 18px;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Colores rápidos:</span>
+        <div class="preset-grid">
+          <div class="color-dot" style="background: #ffffff;" data-color="#ffffff" title="Blanco Frío"></div>
+          <div class="color-dot" style="background: #ffaa44;" data-color="#ffaa44" title="Blanco Cálido"></div>
+          <div class="color-dot" style="background: #ff0000;" data-color="#ff0000" title="Rojo"></div>
+          <div class="color-dot" style="background: #00ff00;" data-color="#00ff00" title="Verde"></div>
+          <div class="color-dot" style="background: #0088ff;" data-color="#0088ff" title="Azul"></div>
+          <div class="color-dot" style="background: #ff00ff;" data-color="#ff00ff" title="Magenta"></div>
+          <div class="color-dot" style="background: #ffff00;" data-color="#ffff00" title="Amarillo"></div>
+          <div class="color-dot" style="background: #00ffff;" data-color="#00ffff" title="Cian"></div>
+          <div class="color-dot" style="background: #ff6600;" data-color="#ff6600" title="Naranja"></div>
+          <div class="color-dot" style="background: #8b5cf6;" data-color="#8b5cf6" title="Púrpura"></div>
+          <div class="color-dot" style="background: #10b981;" data-color="#10b981" title="Esmeralda"></div>
+          <div class="color-dot" style="background: #f43f5e;" data-color="#f43f5e" title="Rosa"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modos Dinámicos y Efectos -->
+    <div class="card">
+      <div class="card-title">
+        <span>Efectos Dinámicos</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <select id="modeSelector" class="mode-select">
+          <option value="0x00">Seleccionar Efecto...</option>
+          <option value="0x25">🌈 Fundido 7 colores (Fade)</option>
+          <option value="0x26">🔴 Fundido Rojo gradual</option>
+          <option value="0x27">🟢 Fundido Verde gradual</option>
+          <option value="0x28">🔵 Fundido Azul gradual</option>
+          <option value="0x29">🟡 Fundido Amarillo gradual</option>
+          <option value="0x2a">🔷 Fundido Cian gradual</option>
+          <option value="0x2b">🟣 Fundido Púrpura gradual</option>
+          <option value="0x2c">⚪ Fundido Blanco gradual</option>
+          <option value="0x30">⚡ Estroboscópico 7 colores</option>
+          <option value="0x31">🔴 Estrobo Rojo</option>
+          <option value="0x32">🟢 Estrobo Verde</option>
+          <option value="0x33">🔵 Estrobo Azul</option>
+          <option value="0x38">🔀 Salto 7 colores (Jump)</option>
+        </select>
+
+        <div class="control-row" style="margin-top: 4px;">
+          <div class="control-label">
+            <span>Velocidad del Efecto</span>
+            <span id="speedValue">Rápido</span>
+          </div>
+          <input type="range" id="speedSlider" min="1" max="31" value="16" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Consola de Comunicación BLE (Plegable / Oculta por defecto) -->
+    <details class="card">
+      <summary>
+        <span>📡 Registro de Comunicación BLE</span>
+        <span style="font-size: 0.75rem; color: var(--accent);">Ver registro ▸</span>
+      </summary>
+      <div class="log-content-wrapper">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+          <button id="btnClearLog" style="padding: 4px 10px; font-size: 0.75rem; background: #334155;">Limpiar</button>
+        </div>
+        <div id="logBox" class="log-box"></div>
+      </div>
+    </details>
+  </div>
+
+  <script>
+    const connectedDevices = new Map();
+    let currentColor = { r: 255, g: 255, b: 255 };
+    let currentBrightness = 100;
+    let throttleTimeout = null;
+
+    const btnConnect = document.getElementById('btnConnect');
+    const btnAddAnother = document.getElementById('btnAddAnother');
+    const initialConnectBox = document.getElementById('initialConnectBox');
+    const devicesContainer = document.getElementById('devicesContainer');
+    const devicesList = document.getElementById('devicesList');
+    const targetModeBar = document.getElementById('targetModeBar');
+    const targetSelect = document.getElementById('targetSelect');
+
+    const statusBadge = document.getElementById('statusBadge');
+    const statusText = document.getElementById('statusText');
+    const btnPowerOn = document.getElementById('btnPowerOn');
+    const btnPowerOff = document.getElementById('btnPowerOff');
+    const colorPicker = document.getElementById('colorPicker');
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const brightnessValue = document.getElementById('brightnessValue');
+    const bulbPreview = document.getElementById('bulbPreview');
+    const modeSelector = document.getElementById('modeSelector');
+    const speedSlider = document.getElementById('speedSlider');
+    const speedValue = document.getElementById('speedValue');
+    const logBox = document.getElementById('logBox');
+    const btnClearLog = document.getElementById('btnClearLog');
+
+    function log(msg, type = 'normal') {
+      if (!logBox) return;
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      const time = new Date().toLocaleTimeString();
+      entry.textContent = `[${time}] ${msg}`;
+      logBox.appendChild(entry);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    btnClearLog.addEventListener('click', () => { logBox.innerHTML = ''; });
+
+    function updateGlow(r, g, b, brightness) {
+      const scale = brightness / 100;
+      const displayR = Math.round(r * scale);
+      const displayG = Math.round(g * scale);
+      const displayB = Math.round(b * scale);
+      const hex = `rgb(${displayR}, ${displayG}, ${displayB})`;
+      bulbPreview.style.background = hex;
+      bulbPreview.style.boxShadow = `0 0 35px ${hex}`;
+    }
+
+    function hexToRgb(hex) {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 255, g: 255, b: 255 };
+    }
+
+    async function sendCommand(bytes, label = "Comando") {
+      if (connectedDevices.size === 0) {
+        log(`No hay dispositivo conectado para enviar: ${label}`, 'error');
+        return;
+      }
+
+      const target = targetSelect.value;
+      const hexDump = Array.from(bytes).map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(' ');
+
+      let targets = [];
+      if (target === 'ALL') {
+        targets = Array.from(connectedDevices.values());
+      } else if (connectedDevices.has(target)) {
+        targets = [connectedDevices.get(target)];
+      }
+
+      for (const item of targets) {
+        try {
+          if (!item.char) continue;
+          log(`TX [${item.name}]: ${hexDump} (${label})`, 'tx');
+          if (item.char.writeValueWithoutResponse) {
+            await item.char.writeValueWithoutResponse(bytes);
+          } else {
+            await item.char.writeValueWithResponse(bytes);
+          }
+        } catch (err) {
+          log(`Error enviando a ${item.name}: ${err.message}`, 'error');
+        }
+      }
+    }
+
+    async function connectBluetooth() {
+      if (!navigator.bluetooth) {
+        log("Web Bluetooth no soportado. Usa Google Chrome o Microsoft Edge.", "error");
+        alert("Tu navegador no soporta Web Bluetooth. Abre esta página en Google Chrome o Microsoft Edge.");
+        return;
+      }
+
+      log("Buscando dispositivos Bluetooth...", "info");
+
+      try {
+        const device = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true,
+          optionalServices: [
+            0xFFD5, 0xFFD0, 0xFFE0, 0xFFF0,
+            '0000ffd5-0000-1000-8000-00805f9b34fb',
+            '0000ffd0-0000-1000-8000-00805f9b34fb',
+            '0000ffe0-0000-1000-8000-00805f9b34fb',
+            '0000fff0-0000-1000-8000-00805f9b34fb'
+          ]
+        });
+
+        if (connectedDevices.has(device.id)) {
+          log(`El dispositivo ${device.name || device.id} ya está conectado.`, 'info');
+          return;
+        }
+
+        const deviceNameStr = device.name || `Luz #${connectedDevices.size + 1}`;
+        log(`Conectando a ${deviceNameStr}...`, 'info');
+        const server = await device.gatt.connect();
+
+        log("Descubriendo servicios...", "info");
+        const services = await server.getPrimaryServices();
+        let targetChar = null;
+
+        for (const service of services) {
+          try {
+            const characteristics = await service.getCharacteristics();
+            for (const char of characteristics) {
+              if (char.properties.write || char.properties.writeWithoutResponse) {
+                targetChar = char;
+                if (char.uuid.includes('ffd9') || char.uuid.includes('ffe1') || char.uuid.includes('fff3')) {
+                  break;
+                }
+              }
+            }
+          } catch (e) {}
+          if (targetChar && targetChar.uuid.includes('ffd9')) break;
+        }
+
+        if (!targetChar) {
+          throw new Error("No se encontró característica de escritura compatible.");
+        }
+
+        const entry = {
+          device: device,
+          server: server,
+          char: targetChar,
+          name: deviceNameStr,
+          id: device.id
+        };
+
+        connectedDevices.set(device.id, entry);
+
+        device.addEventListener('gattserverdisconnected', () => {
+          log(`Dispositivo desconectado: ${entry.name}`, 'error');
+          connectedDevices.delete(device.id);
+          renderDevices();
+        });
+
+        log(`¡Conectado exitosamente con ${entry.name}!`, 'success');
+        renderDevices();
+        sendRGB(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+
+      } catch (error) {
+        log(`Error al conectar: ${error.message}`, 'error');
+      }
+    }
+
+    function disconnectDevice(id) {
+      if (connectedDevices.has(id)) {
+        const item = connectedDevices.get(id);
+        if (item.device && item.device.gatt.connected) {
+          item.device.gatt.disconnect();
+        }
+        connectedDevices.delete(id);
+        renderDevices();
+      }
+    }
+
+    function renderDevices() {
+      const count = connectedDevices.size;
+      devicesList.innerHTML = '';
+
+      if (count === 0) {
+        statusBadge.classList.remove('connected');
+        statusText.textContent = 'Desconectado';
+        initialConnectBox.style.display = 'block';
+        devicesContainer.style.display = 'none';
+        targetModeBar.style.display = 'none';
+      } else {
+        statusBadge.classList.add('connected');
+        statusText.textContent = `${count} Luz${count > 1 ? 'ces' : ''} Conectada${count > 1 ? 's' : ''}`;
+        initialConnectBox.style.display = 'none';
+        devicesContainer.style.display = 'block';
+
+        connectedDevices.forEach((item, id) => {
+          const chip = document.createElement('div');
+          chip.className = 'device-chip';
+          chip.innerHTML = `
+            <div class="device-chip-info">
+              <span style="color: var(--accent);">💡</span>
+              <span>${item.name}</span>
+            </div>
+            <div class="device-chip-actions">
+              <button class="btn-chip-disconnect" onclick="disconnectDevice('${id}')">Desconectar</button>
+            </div>
+          `;
+          devicesList.appendChild(chip);
+        });
+
+        if (count > 1) {
+          targetModeBar.style.display = 'flex';
+          targetSelect.innerHTML = `<option value="ALL">✨ Todas las luces (${count}) Sincronizadas</option>`;
+          connectedDevices.forEach((item, id) => {
+            const opt = document.createElement('option');
+            opt.value = id;
+            opt.textContent = `💡 Solo ${item.name}`;
+            targetSelect.appendChild(opt);
+          });
+        } else {
+          targetModeBar.style.display = 'none';
+          targetSelect.innerHTML = '<option value="ALL">✨ Todas las luces</option>';
+        }
+      }
+    }
+
+    window.disconnectDevice = disconnectDevice;
+
+    function powerOn() {
+      sendCommand(new Uint8Array([0xCC, 0x23, 0x33]), "Encender");
+    }
+
+    function powerOff() {
+      sendCommand(new Uint8Array([0xCC, 0x24, 0x33]), "Apagar");
+    }
+
+    function sendRGB(r, g, b, brightness) {
+      const scale = brightness / 100;
+      const scaledR = Math.round(r * scale);
+      const scaledG = Math.round(g * scale);
+      const scaledB = Math.round(b * scale);
+      sendCommand(new Uint8Array([0x56, scaledR, scaledG, scaledB, 0x00, 0xF0, 0xAA]), `RGB(${scaledR},${scaledG},${scaledB})`);
+    }
+
+    function sendMode(modeHex, speedVal) {
+      const mode = parseInt(modeHex, 16);
+      if (mode === 0) return;
+      const speed = 32 - speedVal;
+      sendCommand(new Uint8Array([0xBB, mode, speed, 0x44]), `Modo 0x${mode.toString(16).toUpperCase()}`);
+    }
+
+    function throttledSendColor() {
+      if (throttleTimeout) return;
+      throttleTimeout = setTimeout(() => {
+        sendRGB(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+        throttleTimeout = null;
+      }, 50);
+    }
+
+    btnConnect.addEventListener('click', connectBluetooth);
+    btnAddAnother.addEventListener('click', connectBluetooth);
+    btnPowerOn.addEventListener('click', powerOn);
+    btnPowerOff.addEventListener('click', powerOff);
+
+    colorPicker.addEventListener('input', (e) => {
+      currentColor = hexToRgb(e.target.value);
+      updateGlow(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+      throttledSendColor();
+    });
+
+    brightnessSlider.addEventListener('input', (e) => {
+      currentBrightness = parseInt(e.target.value, 10);
+      brightnessValue.textContent = `${currentBrightness}%`;
+      updateGlow(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+      throttledSendColor();
+    });
+
+    document.querySelectorAll('.color-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const hex = dot.getAttribute('data-color');
+        currentColor = hexToRgb(hex);
+        colorPicker.value = hex;
+        updateGlow(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+        sendRGB(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+      });
+    });
+
+    modeSelector.addEventListener('change', (e) => {
+      sendMode(e.target.value, parseInt(speedSlider.value, 10));
+    });
+
+    speedSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      speedValue.textContent = val > 20 ? 'Rápido' : (val > 10 ? 'Medio' : 'Lento');
+      if (modeSelector.value !== "0x00") {
+        sendMode(modeSelector.value, val);
+      }
+    });
+
+    updateGlow(255, 255, 255, 100);
+    log("SmartLight listo. Haz clic en 'Conectar Luz' para emparejar.", "info");
+  </script>
+</body>
+</html>
