@@ -1,51 +1,49 @@
 ﻿<div align="center">
-  <img src="icon.png" width="130" height="130" alt="BrightLight Icon" style="border-radius: 28px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);" />
-  
-  # 💡 BrightLight
+  <img src="icon.png" width="100" height="100" alt="BrightLight Logo" style="border-radius: 20px;" />
 
-  ### **Controlador Web Bluetooth para bombillas y tiras LED (Triones / HappyLighting / IP66)**
+  # BrightLight
 
-  [![Web Bluetooth](https://img.shields.io/badge/Web%20Bluetooth-API-0ea5e9?style=for-the-badge&logo=bluetooth)](https://developer.mozilla.org/es/docs/Web/API/Web_Bluetooth_API)
-  [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Aplicaci%C3%B3n%20En%20Vivo-10b981?style=for-the-badge&logo=github)](https://paucg06.github.io/BrightLight-Bluetooth/)
-  [![Zero Install](https://img.shields.io/badge/100%25-Client%20Side-8b5cf6?style=for-the-badge)](#)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+  **Controlador Web Bluetooth para bombillas y tiras LED (Triones / HappyLighting / IP66)**
 
-  <br />
-
-  ## 🚀 **[👉 ABRIR APLICACIÓN WEB EN VIVO](https://paucg06.github.io/BrightLight-Bluetooth/)**
-  *Compatible con Google Chrome, Microsoft Edge y Opera en Windows, macOS, Linux y Android.*
-
-  <br />
+  <p>
+    <a href="https://paucg06.github.io/BrightLight-Bluetooth/">
+      <img src="https://img.shields.io/badge/Demo_Online-Abrir_Aplicación-2563eb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Demo Online" />
+    </a>
+    <a href="https://developer.mozilla.org/es/docs/Web/API/Web_Bluetooth_API">
+      <img src="https://img.shields.io/badge/Web_Bluetooth-API_Standard-0ea5e9?style=for-the-badge&logo=bluetooth&logoColor=white" alt="Web Bluetooth API" />
+    </a>
+    <a href="LICENSE">
+      <img src="https://img.shields.io/badge/Licencia-MIT-10b981?style=for-the-badge" alt="Licencia MIT" />
+    </a>
+  </p>
 </div>
 
 ---
 
-## 📸 Demostración Visual
+## Demostración Visual
 
-### 🔌 1. Conexión Bluetooth & Control Multi-Luz
-Emparejamiento en un clic mediante Web Bluetooth. Permite conectar y gestionar múltiples bombillas simultáneamente de forma sincronizada o individual.
+### 1. Conexión Bluetooth y Gestión Multi-Dispositivo
+Emparejamiento directo mediante Web Bluetooth API. Permite conectar y sincronizar múltiples bombillas en una misma sesión o gestionarlas de manera individual.
 
 <div align="center">
-  <img src="assets/bluetooth_conect.png" width="85%" alt="Panel de Conexión Bluetooth y Multi-Luz" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);" />
+  <img src="assets/bluetooth_conect.png" width="85%" alt="Conexión Bluetooth y Multi-Luz" style="border-radius: 10px;" />
 </div>
 
 <br />
 
----
-
-### 🎨 2. Control de Color y Potencia
-Selector cromático completo con vista previa de brillo neón en tiempo real y paleta rápida de 12 colores esenciales.
+### 2. Control de Color y Regulación de Brillo
+Selector cromático continuo con previsualización en tiempo real y paleta rápida de 12 colores esenciales con regulación de potencia del 1% al 100%.
 
 <div align="center">
   <table>
     <tr>
       <td width="50%" align="center">
-        <strong>Paleta Rápida & Brillo</strong><br /><br />
-        <img src="assets/color_brillo.png" width="100%" alt="Paleta rápida de colores y brillo" style="border-radius: 10px;" />
+        <strong>Paleta Rápida y Brillo</strong><br /><br />
+        <img src="assets/color_brillo.png" width="100%" alt="Paleta de colores y control de potencia" style="border-radius: 8px;" />
       </td>
       <td width="50%" align="center">
         <strong>Selector Cromático Completo</strong><br /><br />
-        <img src="assets/color_brillo_especial.png" width="100%" alt="Selector de color especial" style="border-radius: 10px;" />
+        <img src="assets/color_brillo_especial.png" width="100%" alt="Selector de color especial" style="border-radius: 8px;" />
       </td>
     </tr>
   </table>
@@ -53,47 +51,33 @@ Selector cromático completo con vista previa de brillo neón en tiempo real y p
 
 <br />
 
----
-
-### 🌈 3. Efectos Dinámicos y Creador de Secuencias Custom
-Modos predefinidos (*Arcoíris*, *Salto de colores*, *Estrobo*, *Pulso*) y un **Creador de Secuencias** para encadenar tus propios colores (ej. Verde ➔ Rojo ➔ Amarillo) con transiciones suaves (*Fade*, *Jump* o *Flash*) reguladas por velocidad.
+### 3. Modos Dinámicos y Secuencias Personalizadas
+Efectos integrados (Fundido Multicolor, Salto de colores, Estrobo, Pulso) y un motor de secuencias custom para encadenar colores personalizados con transiciones de velocidad regulable.
 
 <div align="center">
-  <img src="assets/efect_dinamicos.png" width="85%" alt="Efectos Dinámicos y Creador de Secuencias" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);" />
+  <img src="assets/efect_dinamicos.png" width="85%" alt="Efectos dinámicos y secuencias personalizadas" style="border-radius: 10px;" />
 </div>
 
 <br />
 
----
-
-### 📡 4. Registro de Comunicación BLE en Tiempo Real
-Consola de diagnóstico minimalista e integrada para inspeccionar cada byte transmitido al controlador GATT de la bombilla.
+### 4. Registro de Comunicación BLE en Tiempo Real
+Consola de diagnóstico minimalista para monitorizar los paquetes de bytes enviados al hardware.
 
 <div align="center">
-  <img src="assets/reg_comunic_BLE.png" width="85%" alt="Registro de Comunicación BLE" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);" />
+  <img src="assets/reg_comunic_BLE.png" width="85%" alt="Registro de comunicación BLE" style="border-radius: 10px;" />
 </div>
 
-<br />
+---
+
+## Características Técnicas
+
+- **Sin dependencias de backend**: Ejecución 100% en el lado del cliente a través del navegador.
+- **Compatibilidad de protocolo**: Comunicación directa con el servicio GATT `0xFFD5` y la característica de escritura `0xFFD9` (protocolos Triones, HappyLighting y QHM).
+- **Interfaz moderna**: Diseño oscuro con tipografía *Plus Jakarta Sans* e iconografía vectorial SVG nativa.
+- **Compatibilidad**: Compatible con Google Chrome, Microsoft Edge y Opera en Windows, macOS, Linux y Android.
 
 ---
 
-## ⚡ Características Clave
+## Licencia
 
-* 🌐 **100% en el Navegador**: Sin Node.js, sin Python y sin controladores adicionales.
-* 💡 **Protocolo Triones / HappyLighting**: Comunicación directa sobre el servicio `0xFFD5` y la característica de escritura `0xFFD9`.
-* 🎛️ **Regulación Precisa**: Control de potencia del 1% al 100% y velocidad ajustable en tiempo real.
-* 📱 **PWA & Responsive**: Diseño oscuro moderno optimizado para PC de escritorio, portátiles y smartphones.
-
----
-
-## 🌐 Cómo usarlo con GitHub Pages
-
-1. Abre el enlace del proyecto: **[https://paucg06.github.io/BrightLight-Bluetooth/](https://paucg06.github.io/BrightLight-Bluetooth/)**
-2. Pulsa en **"Conectar Luz"** y selecciona tu bombilla Bluetooth en la ventana emergente.
-3. ¡Listo! Ya puedes controlar los colores y la potencia al instante.
-
----
-
-## 📄 Licencia
-
-Distribuido bajo la Licencia **MIT**. Consulta `LICENSE` para más información.
+Distribuido bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
