@@ -1,13 +1,15 @@
 ﻿<div align="center">
-  <img src="icon.png" width="100" height="100" alt="BrightLight Logo" style="border-radius: 20px;" />
+  <a href="https://paucg06.github.io/BrightLight-Bluetooth/">
+    <img src="icon.png" width="100" height="100" alt="BrightLight Logo" style="border-radius: 20px;" />
+  </a>
 
-  # BrightLight
+  # <a href="https://paucg06.github.io/BrightLight-Bluetooth/" style="text-decoration: none; color: inherit;">BrightLight ↗</a>
 
   **Controlador Web Bluetooth para bombillas y tiras LED (Triones / HappyLighting / IP66)**
 
   <p>
     <a href="https://paucg06.github.io/BrightLight-Bluetooth/">
-      <img src="https://img.shields.io/badge/Demo_Online-Abrir_Aplicación-2563eb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Demo Online" />
+      <img src="https://img.shields.io/badge/Web-Abrir_Aplicación-2563eb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Web" />
     </a>
     <a href="https://developer.mozilla.org/es/docs/Web/API/Web_Bluetooth_API">
       <img src="https://img.shields.io/badge/Web_Bluetooth-API_Standard-0ea5e9?style=for-the-badge&logo=bluetooth&logoColor=white" alt="Web Bluetooth API" />
@@ -35,18 +37,9 @@ Emparejamiento directo mediante Web Bluetooth API. Permite conectar y sincroniza
 Selector cromático continuo con previsualización en tiempo real y paleta rápida de 12 colores esenciales con regulación de potencia del 1% al 100%.
 
 <div align="center">
-  <table>
-    <tr>
-      <td width="50%" align="center">
-        <strong>Paleta Rápida y Brillo</strong><br /><br />
-        <img src="assets/color_brillo.png" width="100%" alt="Paleta de colores y control de potencia" style="border-radius: 8px;" />
-      </td>
-      <td width="50%" align="center">
-        <strong>Selector Cromático Completo</strong><br /><br />
-        <img src="assets/color_brillo_especial.png" width="100%" alt="Selector de color especial" style="border-radius: 8px;" />
-      </td>
-    </tr>
-  </table>
+  <img src="assets/color_brillo.png" width="45%" alt="Paleta de colores y control de potencia" style="border-radius: 8px;" />
+  &nbsp;&nbsp;
+  <img src="assets/color_brillo_especial.png" width="45%" alt="Selector de color especial" style="border-radius: 8px;" />
 </div>
 
 <br />
