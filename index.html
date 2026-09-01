@@ -484,14 +484,19 @@
       background: #f43f5e;
       color: #fff;
       border-radius: 50%;
-      font-size: 10px;
-      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid #fff;
+      border: 1.5px solid #fff;
       cursor: pointer;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      padding: 0;
+    }
+
+    .chip-delete-btn:hover {
+      background: #e11d48;
+      transform: scale(1.1);
     }
 
     .btn-add-color-chip {
@@ -734,13 +739,14 @@
       </div>
       <div style="display: flex; flex-direction: column; gap: 14px;">
         <div>
-          <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">Efectos Predefinidos:</label>
+          <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">Seleccionar Efecto:</label>
           <select id="modeSelector" class="form-select">
             <option value="0x00">Ninguno (Color estático)</option>
             <option value="0x25">🌈 Fundido Arcoíris (Multicolor Fade)</option>
             <option value="0x38">⚡ Salto de 7 Colores (Color Jump)</option>
             <option value="0x37">✨ Estrobo Blanco (White Flash)</option>
             <option value="0x2c">🌊 Pulso Suave (Color Pulse)</option>
+            <option value="custom">🎨 Personalizado (Elegir colores...)</option>
           </select>
         </div>
 
@@ -752,8 +758,19 @@
           <input type="range" id="speedSlider" min="1" max="31" value="16" />
         </div>
 
-        <!-- CREADOR DE EFECTOS PERSONALIZADOS -->
-        <div class="custom-effects-box">
+        <div class="custom-loop-controls" style="margin-top: 2px;">
+          <button id="btnStartEffect" class="btn-custom-start">
+            <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Iniciar Efecto
+          </button>
+          <button id="btnStopEffect" class="btn-custom-stop">
+            <svg class="icon-svg" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" rx="2"/></svg>
+            Detener
+          </button>
+        </div>
+
+        <!-- CREADOR DE EFECTOS PERSONALIZADOS (Oculto por defecto) -->
+        <div id="customEffectsBox" class="custom-effects-box" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <label style="font-size: 0.88rem; font-weight: 700; color: #fff;">Secuencia Personalizada de Colores:</label>
             <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-dim);" id="customLoopStatus">Inactivo</span>
@@ -763,35 +780,13 @@
           
           <div class="custom-colors-track" id="customColorsTrack"></div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div>
-              <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Tipo de Transición:</label>
-              <select id="customTransitionType" class="form-select" style="padding: 9px 12px; font-size: 0.85rem;">
-                <option value="fade">Fundido Suave (Fade)</option>
-                <option value="jump">Salto Directo (Jump)</option>
-                <option value="strobe">Estroboscópico (Flash)</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Tiempo por Color:</label>
-              <select id="customDuration" class="form-select" style="padding: 9px 12px; font-size: 0.85rem;">
-                <option value="600">Muy Rápido (0.6s)</option>
-                <option value="1200" selected>Normal (1.2s)</option>
-                <option value="2500">Lento (2.5s)</option>
-                <option value="4500">Muy Lento (4.5s)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="custom-loop-controls">
-            <button id="btnStartCustom" class="btn-custom-start">
-              <svg class="icon-svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Iniciar Secuencia
-            </button>
-            <button id="btnStopCustom" class="btn-custom-stop">
-              <svg class="icon-svg" viewBox="0 0 24 24"><rect width="14" height="14" x="5" y="5" rx="2"/></svg>
-              Detener
-            </button>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px;">Tipo de Transición:</label>
+            <select id="customTransitionType" class="form-select" style="padding: 9px 12px; font-size: 0.85rem;">
+              <option value="fade">Fundido Suave (Fade)</option>
+              <option value="jump">Salto Directo (Jump)</option>
+              <option value="strobe">Estroboscópico (Flash)</option>
+            </select>
           </div>
         </div>
       </div>
@@ -1045,23 +1040,24 @@
     let customColors = ['#00ff00', '#ff0000', '#ffff00'];
     let customLoopInterval = null;
     let customIndex = 0;
+    let isPresetRunning = false;
 
+    const customEffectsBox = document.getElementById('customEffectsBox');
     const customColorsTrack = document.getElementById('customColorsTrack');
-    const btnStartCustom = document.getElementById('btnStartCustom');
-    const btnStopCustom = document.getElementById('btnStopCustom');
+    const btnStartEffect = document.getElementById('btnStartEffect');
+    const btnStopEffect = document.getElementById('btnStopEffect');
     const customLoopStatus = document.getElementById('customLoopStatus');
     const customTransitionType = document.getElementById('customTransitionType');
-    const customDuration = document.getElementById('customDuration');
 
     window.disconnectDevice = disconnectDevice;
 
     function powerOn() {
-      stopCustomSequence();
+      stopAllEffects();
       sendCommand(new Uint8Array([0xCC, 0x23, 0x33]), "Encender");
     }
 
     function powerOff() {
-      stopCustomSequence();
+      stopAllEffects();
       sendCommand(new Uint8Array([0xCC, 0x24, 0x33]), "Apagar");
     }
 
@@ -1076,7 +1072,7 @@
     function sendMode(modeHex, speedVal) {
       stopCustomSequence();
       const mode = parseInt(modeHex, 16);
-      if (mode === 0) return;
+      if (isNaN(mode) || mode === 0) return;
       const speed = 32 - speedVal;
       sendCommand(new Uint8Array([0xBB, mode, speed, 0x44]), `Modo 0x${mode.toString(16).toUpperCase()}`);
     }
@@ -1113,6 +1109,9 @@
         input.addEventListener('input', (e) => {
           customColors[idx] = e.target.value;
           chip.style.backgroundColor = e.target.value;
+          if (customLoopStatus.textContent === 'Ejecutando') {
+            startCustomSequence();
+          }
         });
 
         chip.appendChild(input);
@@ -1120,11 +1119,15 @@
         if (customColors.length > 2) {
           const delBtn = document.createElement('div');
           delBtn.className = 'chip-delete-btn';
-          delBtn.textContent = '×';
+          delBtn.innerHTML = `<svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:#fff;stroke-width:3;fill:none;display:block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+          delBtn.title = 'Eliminar color';
           delBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             customColors.splice(idx, 1);
             renderCustomColors();
+            if (customLoopStatus.textContent === 'Ejecutando') {
+              startCustomSequence();
+            }
           });
           chip.appendChild(delBtn);
         }
@@ -1142,6 +1145,9 @@
           const next = palette[customColors.length % palette.length];
           customColors.push(next);
           renderCustomColors();
+          if (customLoopStatus.textContent === 'Ejecutando') {
+            startCustomSequence();
+          }
         });
         customColorsTrack.appendChild(addBtn);
       }
@@ -1154,20 +1160,30 @@
       }
       customLoopStatus.textContent = 'Inactivo';
       customLoopStatus.style.color = 'var(--text-dim)';
-      btnStopCustom.classList.remove('active');
+    }
+
+    function stopAllEffects() {
+      stopCustomSequence();
+      isPresetRunning = false;
+      modeSelector.value = "0x00";
+      customEffectsBox.style.display = 'none';
+      btnStopEffect.classList.remove('active');
+      sendRGB(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
     }
 
     function startCustomSequence() {
       stopCustomSequence();
       if (customColors.length === 0) return;
 
-      modeSelector.value = "0x00";
+      isPresetRunning = false;
       customLoopStatus.textContent = 'Ejecutando';
       customLoopStatus.style.color = 'var(--success)';
-      btnStopCustom.classList.add('active');
+      btnStopEffect.classList.add('active');
 
       const transition = customTransitionType.value;
-      const durationMs = parseInt(customDuration.value, 10);
+      const speedVal = parseInt(speedSlider.value, 10);
+      // Mapear slider 1-31 a tiempo por paso (4000ms a 500ms)
+      const durationMs = Math.round(4000 - ((speedVal - 1) / 30) * 3500);
       customIndex = 0;
 
       function step() {
@@ -1223,13 +1239,14 @@
       log(`Secuencia personalizada iniciada (${transition}, ${durationMs}ms)`, 'info');
     }
 
+    // Eventos
     btnConnect.addEventListener('click', connectBluetooth);
     btnAddAnother.addEventListener('click', connectBluetooth);
     btnPowerOn.addEventListener('click', powerOn);
     btnPowerOff.addEventListener('click', powerOff);
 
     colorPicker.addEventListener('input', (e) => {
-      stopCustomSequence();
+      stopAllEffects();
       currentColor = hexToRgb(e.target.value);
       updateGlow(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
       throttledSendColor();
@@ -1244,7 +1261,7 @@
 
     document.querySelectorAll('.color-dot').forEach(dot => {
       dot.addEventListener('click', () => {
-        stopCustomSequence();
+        stopAllEffects();
         const hex = dot.getAttribute('data-color');
         currentColor = hexToRgb(hex);
         colorPicker.value = hex;
@@ -1254,19 +1271,63 @@
     });
 
     modeSelector.addEventListener('change', (e) => {
-      sendMode(e.target.value, parseInt(speedSlider.value, 10));
+      const val = e.target.value;
+      if (val === 'custom') {
+        stopCustomSequence();
+        isPresetRunning = false;
+        customEffectsBox.style.display = 'flex';
+      } else {
+        customEffectsBox.style.display = 'none';
+        stopCustomSequence();
+        if (val !== '0x00') {
+          sendMode(val, parseInt(speedSlider.value, 10));
+          isPresetRunning = true;
+          btnStopEffect.classList.add('active');
+        } else {
+          isPresetRunning = false;
+          btnStopEffect.classList.remove('active');
+          sendRGB(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+        }
+      }
     });
 
     speedSlider.addEventListener('input', (e) => {
       const val = parseInt(e.target.value, 10);
       updateSpeedLabel(val);
-      if (modeSelector.value !== "0x00") {
+      if (modeSelector.value === 'custom') {
+        if (customLoopStatus.textContent === 'Ejecutando') {
+          startCustomSequence();
+        }
+      } else if (modeSelector.value !== '0x00' && isPresetRunning) {
         sendMode(modeSelector.value, val);
       }
     });
 
-    btnStartCustom.addEventListener('click', startCustomSequence);
-    btnStopCustom.addEventListener('click', stopCustomSequence);
+    btnStartEffect.addEventListener('click', () => {
+      const mode = modeSelector.value;
+      if (mode === 'custom') {
+        startCustomSequence();
+      } else if (mode !== '0x00') {
+        sendMode(mode, parseInt(speedSlider.value, 10));
+        isPresetRunning = true;
+        btnStopEffect.classList.add('active');
+      } else {
+        modeSelector.value = '0x25';
+        sendMode('0x25', parseInt(speedSlider.value, 10));
+        isPresetRunning = true;
+        btnStopEffect.classList.add('active');
+      }
+    });
+
+    btnStopEffect.addEventListener('click', () => {
+      stopAllEffects();
+    });
+
+    customTransitionType.addEventListener('change', () => {
+      if (customLoopStatus.textContent === 'Ejecutando') {
+        startCustomSequence();
+      }
+    });
 
     // Inicializaciones
     renderCustomColors();
