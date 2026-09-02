@@ -869,13 +869,15 @@
       } : { r: 255, g: 255, b: 255 };
     }
 
-    async function sendCommand(bytes, label = "Comando") {
+    let gattQueue = Promise.resolve();
+
+    function sendCommand(bytes, label = "Comando") {
       if (connectedDevices.size === 0) {
         log(`No hay dispositivo conectado para enviar: ${label}`, 'error');
-        return;
+        return Promise.resolve();
       }
 
-      const target = targetSelect.value;
+      const target = targetSelect ? targetSelect.value : 'ALL';
       const hexDump = Array.from(bytes).map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(' ');
 
       let targets = [];
@@ -885,19 +887,28 @@
         targets = [connectedDevices.get(target)];
       }
 
-      for (const item of targets) {
-        try {
-          if (!item.char) continue;
-          log(`TX [${item.name}]: ${hexDump} (${label})`, 'tx');
-          if (item.char.writeValueWithoutResponse) {
-            await item.char.writeValueWithoutResponse(bytes);
-          } else {
-            await item.char.writeValueWithResponse(bytes);
+      // Encolar operaciones Bluetooth secuencialmente para evitar 'GATT operation already in progress'
+      gattQueue = gattQueue.then(async () => {
+        for (const item of targets) {
+          try {
+            if (!item.char || !item.device || !item.device.gatt.connected) continue;
+            log(`TX [${item.name}]: ${hexDump} (${label})`, 'tx');
+            if (item.char.writeValueWithoutResponse) {
+              await item.char.writeValueWithoutResponse(bytes);
+            } else {
+              await item.char.writeValueWithResponse(bytes);
+            }
+            // Pequeña pausa de seguridad (35ms) para que el chip Bluetooth procese la trama
+            await new Promise(r => setTimeout(r, 35));
+          } catch (err) {
+            log(`Error enviando a ${item.name}: ${err.message}`, 'error');
           }
-        } catch (err) {
-          log(`Error enviando a ${item.name}: ${err.message}`, 'error');
         }
-      }
+      }).catch(err => {
+        console.error("GATT Queue error:", err);
+      });
+
+      return gattQueue;
     }
 
     async function connectBluetooth() {
@@ -1052,12 +1063,27 @@
     window.disconnectDevice = disconnectDevice;
 
     function powerOn() {
-      stopAllEffects();
+      stopCustomSequence();
+      isPresetRunning = false;
+      btnStopEffect.classList.remove('active');
+      updateGlow(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
       sendCommand(new Uint8Array([0xCC, 0x23, 0x33]), "Encender");
+      // Restaurar color tras encender
+      setTimeout(() => {
+        sendRGB(currentColor.r, currentColor.g, currentColor.b, currentBrightness);
+      }, 50);
     }
 
     function powerOff() {
-      stopAllEffects();
+      stopCustomSequence();
+      isPresetRunning = false;
+      modeSelector.value = "0x00";
+      customEffectsBox.style.display = 'none';
+      btnStopEffect.classList.remove('active');
+      if (bulbPreview) {
+        bulbPreview.style.background = '#111827';
+        bulbPreview.style.boxShadow = 'none';
+      }
       sendCommand(new Uint8Array([0xCC, 0x24, 0x33]), "Apagar");
     }
 
