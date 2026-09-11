@@ -1047,8 +1047,31 @@
       }
     }
 
-    // Configuración de Secuencia Personalizada
-    let customColors = ['#00ff00', '#ff0000', '#ffff00'];
+    // Configuración de Secuencia Personalizada con persistencia en LocalStorage
+    function loadCustomColors() {
+      try {
+        const saved = localStorage.getItem('brightlight_custom_colors');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length >= 2) {
+            return parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Error cargando customColors de localStorage', e);
+      }
+      return ['#00ff00', '#ff0000', '#ffff00'];
+    }
+
+    function saveCustomColors() {
+      try {
+        localStorage.setItem('brightlight_custom_colors', JSON.stringify(customColors));
+      } catch (e) {
+        console.warn('Error guardando customColors en localStorage', e);
+      }
+    }
+
+    let customColors = loadCustomColors();
     let customLoopInterval = null;
     let customIndex = 0;
     let isPresetRunning = false;
@@ -1135,6 +1158,7 @@
         input.addEventListener('input', (e) => {
           customColors[idx] = e.target.value;
           chip.style.backgroundColor = e.target.value;
+          saveCustomColors();
           if (customLoopStatus.textContent === 'Ejecutando') {
             startCustomSequence();
           }
@@ -1150,6 +1174,7 @@
           delBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             customColors.splice(idx, 1);
+            saveCustomColors();
             renderCustomColors();
             if (customLoopStatus.textContent === 'Ejecutando') {
               startCustomSequence();
@@ -1164,12 +1189,13 @@
       if (customColors.length < 6) {
         const addBtn = document.createElement('button');
         addBtn.className = 'btn-add-color-chip';
-        addBtn.textContent = '+';
+        addBtn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
         addBtn.title = 'Añadir color a la secuencia';
         addBtn.addEventListener('click', () => {
           const palette = ['#00ffff', '#ff6600', '#ff00ff', '#ffffff', '#8b5cf6'];
           const next = palette[customColors.length % palette.length];
           customColors.push(next);
+          saveCustomColors();
           renderCustomColors();
           if (customLoopStatus.textContent === 'Ejecutando') {
             startCustomSequence();
