@@ -15,7 +15,7 @@
       <img src="https://img.shields.io/badge/Web_Bluetooth-API_Standard-0ea5e9?style=for-the-badge&logo=bluetooth&logoColor=white" alt="Web Bluetooth API" />
     </a>
     <a href="LICENSE">
-      <img src="https://img.shields.io/badge/Licencia-MIT-10b981?style=for-the-badge" alt="Licencia MIT" />
+      <img src="https://img.shields.io/badge/Licencia-CC%20BY--NC--ND%204.0-red?style=for-the-badge" alt="Licencia CC BY-NC-ND 4.0" />
     </a>
   </p>
 </div>
@@ -73,4 +73,4 @@ Consola de diagnóstico minimalista para monitorizar los paquetes de bytes envia
 
 ## Licencia
 
-Distribuido bajo la licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+Distribuido bajo la licencia **Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)**. Consulta el archivo `LICENSE` para más detalles.
