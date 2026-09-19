@@ -1,14 +1,14 @@
 <div align="center">
-  <a href="https://paucg06.github.io/BrightLight-Bluetooth/">
+  <a href="https://brightlight.eternodev.com/">
     <img src="icon.png" width="100" height="100" alt="BrightLight Logo" style="border-radius: 20px;" />
   </a>
 
-  # <a href="https://paucg06.github.io/BrightLight-Bluetooth/" style="text-decoration: none; color: inherit;">BrightLight</a>
+  # <a href="https://brightlight.eternodev.com/" style="text-decoration: none; color: inherit;">BrightLight</a>
 
   **Controlador Web Bluetooth para bombillas y tiras LED (Triones / HappyLighting / IP66)**
 
   <p>
-    <a href="https://paucg06.github.io/BrightLight-Bluetooth/">
+    <a href="https://brightlight.eternodev.com/">
       <img src="https://img.shields.io/badge/Web-Abrir_Aplicación-2563eb?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Web" />
     </a>
     <a href="https://developer.mozilla.org/es/docs/Web/API/Web_Bluetooth_API">
