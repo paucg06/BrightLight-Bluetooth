@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg-base: #0b0f19;
   --bg-card: #151d2e;
   --bg-card-hover: #1e293b;
@@ -667,4 +667,33 @@ details[open] .chevron-icon {
 @media (max-width: 480px) {
   .preset-grid { grid-template-columns: repeat(4, 1fr); }
   .power-controls { grid-template-columns: 1fr; }
+}
+
+/* Pie de información y autoría */
+.app-footer {
+  text-align: center;
+  margin-top: 8px;
+  padding: 16px 12px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border-color);
+}
+
+.app-footer strong {
+  color: var(--text-muted);
+}
+
+.app-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.15s ease;
+}
+
+.app-footer a:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
